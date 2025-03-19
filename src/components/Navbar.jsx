@@ -1,19 +1,48 @@
 import { Link } from "react-router-dom";
+import { useGlobalReducer } from "../hooks/useGlobalReducer";
+import starWarsLogo from "../assets/Star-Wars-Logo.jpg";
 
-export const Navbar = () => {
 
-	return (
-		<nav className="navbar navbar-light bg-light">
-			<div className="container">
-				<Link to="/">
-					<span className="navbar-brand mb-0 h1">React Boilerplate</span>
-				</Link>
-				<div className="ml-auto">
-					<Link to="/demo">
-						<button className="btn btn-primary">Check the Context in action</button>
-					</Link>
-				</div>
-			</div>
-		</nav>
-	);
+
+const Navbar = () => {
+    const { store, actions } = useGlobalReducer();
+
+    return (
+        <nav className="navbar navbar-light bg-light px-3">
+            <div className="container d-flex justify-content-between align-items-center">
+                {/* LOGO DE STAR WARS */}
+                <Link to="/">
+                    <img src={starWarsLogo} alt="Star Wars Logo" style={{ height: "50px" }} />
+                </Link>
+
+                {/* BOTÓN DE FAVORITOS */}
+                <div className="dropdown">
+                    <button 
+                        className="btn btn-warning dropdown-toggle" 
+                        type="button" 
+                        data-bs-toggle="dropdown">
+                        Favorites {store.favorites.length}
+                    </button>
+                    <ul className="dropdown-menu">
+                        {store.favorites.length > 0 ? (
+                            store.favorites.map((fav, index) => (
+                                <li key={index} className="d-flex justify-content-between">
+                                    <span className="dropdown-item">{fav}</span>
+                                    <button 
+                                        className="btn btn-danger btn-sm"
+                                        onClick={() => actions.removeFavorite(fav)}>
+                                        🗑️
+                                    </button>
+                                </li>
+                            ))
+                        ) : (
+                            <li className="dropdown-item">(empty)</li>
+                        )}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    );
 };
+
+export default Navbar;
